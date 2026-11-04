@@ -1,0 +1,121 @@
+@import 'tailwindcss';
+
+@layer base {
+  .scrollbar-w-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-w-none::-webkit-scrollbar {
+    display: none;
+  }
+  html,
+  body {
+    min-height: 600px;
+    min-width: 1200px;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* ========== 全局滚动条样式 ========== */
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* ========== 全局表格样式 ========== */
+.arco-table .arco-table-th {
+  background-color: #e5e7eb !important;
+  color: #374151 !important;
+}
+
+.arco-table .arco-table-td {
+  background-color: transparent !important;
+  color: #374151 !important;
+}
+
+.arco-table .arco-table-th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.arco-table .arco-table-th:last-child {
+  border-top-right-radius: 8px;
+}
+
+.arco-table .arco-table-tr:last-child .arco-table-td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+.arco-table .arco-table-tr:last-child .arco-table-td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+/* ========== 全局表单样式 ========== */
+.arco-form-item .arco-input,
+.arco-form-item .arco-textarea,
+.arco-form-item .arco-input-search,
+.arco-form-item .arco-select-view,
+.arco-form-item .arco-input-number,
+.arco-form-item .arco-input-tag {
+  border-radius: 8px !important;
+}
+
+.arco-form-item .arco-input-wrapper,
+.arco-form-item .arco-textarea-wrapper,
+.arco-form-item .arco-select-view,
+.arco-form-item .arco-input-number-step,
+.arco-form-item .arco-input-tag {
+  border-radius: 8px !important;
+}
+
+/* ========== 全局按钮样式 ========== */
+.arco-btn {
+  border-radius: 8px !important;
+}
+
+/* ========== 全局卡片样式 ========== */
+.arco-card {
+  border-radius: 12px !important;
+  border: 1px solid var(--color-border-2) !important;
+}
+
+/* ========== 全局标签样式 ========== */
+.arco-tag {
+  border-radius: 4px;
+}
+
+/* ========== 全局搜索框样式（非表单内） ========== */
+.arco-input-search .arco-input-wrapper {
+  border-radius: 8px !important;
+}
+
+/* ========== 全局弹窗样式 ========== */
+.arco-modal {
+  border-radius: 12px !important;
+}
+
+/* ========== 全局分页样式 ========== */
+.arco-pagination .arco-pagination-item {
+  border-radius: 6px !important;
+}
+
+.arco-pagination .arco-pagination-item-active {
+  font-weight: 600;
+}
+
+/* ========== 动画 ========== */
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.6s ease-out;
+}
