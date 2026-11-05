@@ -7,10 +7,7 @@ import {
   getDocumentsWithPage,
   updateDocument,
 } from '@/services/dataset'
-import type {
-  GetDocumentsWithPageResponse,
-  GetDocumentResponse,
-} from '@/models/dataset'
+import type { GetDocumentsWithPageResponse, GetDocumentResponse } from '@/models/dataset'
 
 type DocumentItem = GetDocumentsWithPageResponse['data']['list'][number]
 

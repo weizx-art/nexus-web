@@ -99,7 +99,8 @@ const fetchDocumentsStatus = async () => {
   if (fetchCount >= 30) stopTimer()
 
   const isCompleted = data.every(
-    (document: { id: string; name: string; status: string }) => document.status === 'complete' || document.status === 'error',
+    (document: { id: string; name: string; status: string }) =>
+      document.status === 'complete' || document.status === 'error',
   )
   if (isCompleted) stopTimer()
 }
@@ -115,7 +116,10 @@ const stopTimer = () => {
   }
 }
 
-const handleFileUpload = (option: { fileItem: FileItem; onSuccess: (response?: unknown) => void }) => {
+const handleFileUpload = (option: {
+  fileItem: FileItem
+  onSuccess: (response?: unknown) => void
+}) => {
   const { fileItem, onSuccess } = option
   const uploadTask = async () => {
     const resp = await uploadFile(fileItem.file as File)

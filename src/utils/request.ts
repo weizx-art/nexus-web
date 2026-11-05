@@ -1,6 +1,7 @@
 import { Message } from '@arco-design/web-vue'
 import { apiPrefix, httpCode } from '@/config'
 import { useCredentialStore } from '@/stores/credential'
+import { useAccountStore } from '@/stores/account'
 import router from '@/router'
 
 const DEFAULT_TIMEOUT = 30_000
@@ -15,8 +16,10 @@ function getAuthHeaders(): Record<string, string> {
 }
 
 function handleUnauthorized() {
-  const { clear } = useCredentialStore()
-  clear()
+  const { clear: clearCredential } = useCredentialStore()
+  const { clear: clearAccount } = useAccountStore()
+  clearCredential()
+  clearAccount()
   router.replace({ path: '/login' })
 }
 
@@ -75,17 +78,13 @@ function request<T>(
     .finally(() => clearTimeout(timeoutId))
 }
 
-export const get = <T>(url: string, params?: QueryParams) =>
-  request<T>('GET', url, { params })
+export const get = <T>(url: string, params?: QueryParams) => request<T>('GET', url, { params })
 
-export const post = <T>(url: string, body?: unknown) =>
-  request<T>('POST', url, { body })
+export const post = <T>(url: string, body?: unknown) => request<T>('POST', url, { body })
 
-export const patch = <T>(url: string, body?: unknown) =>
-  request<T>('PATCH', url, { body })
+export const patch = <T>(url: string, body?: unknown) => request<T>('PATCH', url, { body })
 
-export const del = <T>(url: string) =>
-  request<T>('DELETE', url)
+export const del = <T>(url: string) => request<T>('DELETE', url)
 
 export const upload = <T>(
   url: string,

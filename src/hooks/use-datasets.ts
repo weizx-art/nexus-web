@@ -8,10 +8,7 @@ import {
   getDatasetsWithPage,
   updateDataset,
 } from '@/services/dataset'
-import type {
-  GetDatasetsWithPageResponse,
-  GetDatasetResponse,
-} from '@/models/dataset'
+import type { GetDatasetsWithPageResponse, GetDatasetResponse } from '@/models/dataset'
 import { useDeleteWithConfirm } from './use-common'
 
 type DatasetItem = GetDatasetsWithPageResponse['data']['list'][number]

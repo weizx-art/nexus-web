@@ -56,9 +56,7 @@ const handleSubmit = async ({ errors }: { errors: Record<string, ValidatedError>
     <div class="text-center mb-2 animate-slide-in-left">
       <span class="text-3xl font-bold leading-10 tracking-wider">
         <span class="text-blue-600">综合业务智能</span
-        ><span
-          class="text-gray-800"
-          style="font-family: 'Orbitron', sans-serif; font-weight: 800"
+        ><span class="text-gray-800" style="font-family: 'Orbitron', sans-serif; font-weight: 800"
           >Agent</span
         >
       </span>

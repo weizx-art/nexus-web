@@ -187,7 +187,7 @@ const { handleUpdate: handleUpdateEnabled } = useUpdateDocumentEnabled()
                         record.id,
                         value as boolean,
                         () => {
-                          documents[rowIndex].enabled = value
+                          documents[rowIndex].enabled = value as boolean
                         },
                       )
                     }

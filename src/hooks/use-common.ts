@@ -26,9 +26,7 @@ export function useDeleteWithConfirm(
   return { handleDelete }
 }
 
-export function useToggleEnabled(
-  apiCall: () => Promise<BaseResponse<unknown>>,
-) {
+export function useToggleEnabled(apiCall: () => Promise<BaseResponse<unknown>>) {
   const handleUpdate = async (callback?: () => void) => {
     try {
       const resp = await apiCall()

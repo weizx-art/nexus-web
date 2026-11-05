@@ -84,7 +84,12 @@ watch(
 
 <template>
   <div>
-    <base-modal :visible="props.visible" title="召回测试" :width="1000" @update:visible="hideHitTestingModal">
+    <base-modal
+      :visible="props.visible"
+      title="召回测试"
+      :width="1000"
+      @update:visible="hideHitTestingModal"
+    >
       <div class="text-gray-500 -mt-4 mb-4">基于给定的查询文本测试知识库的召回效果</div>
       <div class="overflow-auto" style="max-height: calc(80vh - 120px)">
         <div class="w-full flex justify-between gap-2">
@@ -190,7 +195,11 @@ watch(
         </div>
       </div>
     </base-modal>
-    <base-modal :visible="retrievalSettingModalVisible" title="检索设置" @update:visible="retrievalSettingModalVisible = false">
+    <base-modal
+      :visible="retrievalSettingModalVisible"
+      title="检索设置"
+      @update:visible="retrievalSettingModalVisible = false"
+    >
       <a-form :model="retrievalSettingForm" class="pt-6" @submit="saveRetrievalSetting">
         <a-form-item field="retrieval_strategy" label="检索策略" label-align="left">
           <a-radio-group

@@ -74,7 +74,11 @@ watch(
 </script>
 
 <template>
-  <base-modal :visible="props.visible" :title="isUpdateOperation ? '更新片段' : '添加片段'" @update:visible="hideModal">
+  <base-modal
+    :visible="props.visible"
+    :title="isUpdateOperation ? '更新片段' : '添加片段'"
+    @update:visible="hideModal"
+  >
     <a-form ref="formRef" :model="form" layout="vertical" @submit="saveSegment">
       <a-form-item
         field="content"

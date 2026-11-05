@@ -12,8 +12,4 @@ export {
   useGetDocument,
 } from './use-documents'
 
-export {
-  useGetSegmentsWithPage,
-  useDeleteSegment,
-  useUpdateSegmentEnabled,
-} from './use-segments'
+export { useGetSegmentsWithPage, useDeleteSegment, useUpdateSegmentEnabled } from './use-segments'

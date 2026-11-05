@@ -26,7 +26,10 @@ const updateAccountData = async () => {
   accountStore.update(resp.data)
 }
 
-const handleAvatarUpload = (option: { fileItem: FileItem; onSuccess: (response?: unknown) => void }) => {
+const handleAvatarUpload = (option: {
+  fileItem: FileItem
+  onSuccess: (response?: unknown) => void
+}) => {
   const { fileItem, onSuccess } = option
   const uploadTask = async () => {
     const upload_resp = await uploadImage(fileItem.file as File)

@@ -49,7 +49,11 @@ onMounted(async () => {
           <router-link
             to="/chat"
             class="relative flex items-center h-14 px-4 w-full overflow-hidden group"
-            :style="{ backgroundImage: `url(${sidebarTitleBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }"
+            :style="{
+              backgroundImage: `url(${sidebarTitleBg})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }"
           >
             <div class="absolute inset-0 bg-white/50 group-hover:bg-white/40 transition-colors" />
             <span
@@ -76,9 +80,15 @@ onMounted(async () => {
         <a-dropdown position="tl">
           <div
             class="relative flex items-center p-2.5 mx-3 my-5 gap-3 transition-all cursor-pointer rounded-xl overflow-hidden group"
-            :style="{ backgroundImage: `url(${sidebarTitleBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }"
+            :style="{
+              backgroundImage: `url(${sidebarTitleBg})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }"
           >
-            <div class="absolute inset-0 bg-white/60 group-hover:bg-white/50 transition-colors rounded-xl" />
+            <div
+              class="absolute inset-0 bg-white/60 group-hover:bg-white/50 transition-colors rounded-xl"
+            />
             <a-avatar
               :size="36"
               class="relative z-10 text-sm bg-blue-600 ring-2 ring-blue-100"

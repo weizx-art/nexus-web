@@ -1,11 +1,7 @@
 import { onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Message, Modal } from '@arco-design/web-vue'
-import {
-  deleteSegment,
-  getSegmentsWithPage,
-  updateSegment,
-} from '@/services/dataset'
+import { deleteSegment, getSegmentsWithPage, updateSegment } from '@/services/dataset'
 import type { GetSegmentsWithPageResponse } from '@/models/dataset'
 
 type SegmentItem = GetSegmentsWithPageResponse['data']['list'][number]
