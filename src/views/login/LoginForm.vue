@@ -13,9 +13,9 @@ const credentialStore = useCredentialStore()
 const router = useRouter()
 
 onMounted(() => {
-  if (import.meta.env.VITE_AUTO_FILL_LOGIN === 'true') {
-    loginForm.username = import.meta.env.VITE_DEFAULT_USERNAME || 'admin'
-    loginForm.password = import.meta.env.VITE_DEFAULT_PASSWORD || 'admin123456'
+  if (import.meta.env.DEV) {
+    loginForm.username = 'admin'
+    loginForm.password = 'admin123'
   }
 })
 
