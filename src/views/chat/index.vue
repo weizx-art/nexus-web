@@ -46,7 +46,10 @@ const abortController = ref<AbortController | null>(null)
 const inputRef = ref<HTMLInputElement>()
 
 const datasets = reactive<DatasetItem[]>([])
-const selectedDatasetIds = ref<string[]>([])
+const selectedDatasetIds = computed({
+  get: () => chatStore.selectedDatasetIds,
+  set: (val: string[]) => chatStore.setSelectedDatasets(val),
+})
 const showDatasetPicker = ref(false)
 const datasetsLoading = ref(false)
 const datasetSearch = ref('')
@@ -84,12 +87,19 @@ const loadConversations = async () => {
   try {
     const resp = await getConversations(1, 50)
     conversations.splice(0, conversations.length, ...resp.data.items)
-    if (conversations.length === 0) return
+    if (conversations.length === 0) {
+      // 列表为空，清除可能存在的陈旧 ID 和知识库选择
+      if (activeConversationId.value) {
+        chatStore.clear()
+      }
+      if (selectedDatasetIds.value.length > 0) {
+        selectedDatasetIds.value = []
+      }
+      return
+    }
     // 如果当前选中的会话在列表中，加载其消息；否则加载第一个
-    const targetId =
-      activeConversationId.value && conversations.some((c) => c.id === activeConversationId.value)
-        ? activeConversationId.value
-        : conversations[0].id
+    const isValid = activeConversationId.value && conversations.some((c) => c.id === activeConversationId.value)
+    const targetId = isValid ? activeConversationId.value : conversations[0].id
     await selectConversation(targetId)
   } catch {
     Message.error('加载对话列表失败')
@@ -137,7 +147,6 @@ const startNewChat = () => {
   chatStore.clear()
   messages.splice(0, messages.length)
   inputMessage.value = ''
-  selectedDatasetIds.value = []
 }
 
 const handleDeleteConversation = (convId: string) => {
@@ -180,9 +189,11 @@ const saveEditTitle = async () => {
 }
 
 const toggleDataset = (id: string) => {
-  const idx = selectedDatasetIds.value.indexOf(id)
-  if (idx >= 0) selectedDatasetIds.value.splice(idx, 1)
-  else selectedDatasetIds.value.push(id)
+  const ids = [...selectedDatasetIds.value]
+  const idx = ids.indexOf(id)
+  if (idx >= 0) ids.splice(idx, 1)
+  else ids.push(id)
+  selectedDatasetIds.value = ids
 }
 
 let _scrollTimer: ReturnType<typeof setTimeout> | null = null
