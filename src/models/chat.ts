@@ -22,6 +22,7 @@ export type Conversation = {
   id: string
   title: string
   message_count: number
+  dataset_ids: string[]
   created_at: string
   updated_at: string | null
 }

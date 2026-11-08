@@ -113,6 +113,14 @@ const loadDatasets = async () => {
   try {
     const resp = await getDatasetsWithPage(1, 50)
     datasets.splice(0, datasets.length, ...resp.data.list)
+    // 列表已加载完整时，清理已被删除的知识库 ID，避免角标计数残留
+    if (resp.data.paginator.total_record <= datasets.length) {
+      const validIds = new Set(datasets.map((d) => d.id))
+      const kept = selectedDatasetIds.value.filter((id) => validIds.has(id))
+      if (kept.length !== selectedDatasetIds.value.length) {
+        selectedDatasetIds.value = kept
+      }
+    }
   } catch {
     Message.error('加载知识库列表失败')
   } finally {
@@ -122,6 +130,11 @@ const loadDatasets = async () => {
 
 const selectConversation = async (convId: string) => {
   activeConversationId.value = convId
+  const conv = conversations.find((c) => c.id === convId)
+  // 恢复该会话记住的知识库选择，过滤掉已被删除的知识库
+  selectedDatasetIds.value = (conv?.dataset_ids ?? []).filter((id) =>
+    datasets.some((d) => d.id === id),
+  )
   messages.splice(0, messages.length)
   try {
     const resp = await getConversationMessages(convId)
@@ -145,6 +158,7 @@ const selectConversation = async (convId: string) => {
 
 const startNewChat = () => {
   chatStore.clear()
+  selectedDatasetIds.value = []
   messages.splice(0, messages.length)
   inputMessage.value = ''
 }
@@ -301,7 +315,9 @@ const handleKeyDown = (e: KeyboardEvent) => {
 }
 
 onMounted(async () => {
-  await Promise.all([loadConversations(), loadDatasets()])
+  // 先加载知识库列表，再加载会话并恢复其知识库选择
+  await loadDatasets()
+  await loadConversations()
 })
 </script>
 
