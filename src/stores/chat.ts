@@ -52,7 +52,6 @@ export const useChatStore = defineStore('chat', () => {
   const clear = () => {
     activeConversationId.value = null
     storage.remove(ACTIVE_CONV_KEY)
-    // 知识库选择按会话记忆，由页面在新建/切换会话时更新
   }
 
   return {
