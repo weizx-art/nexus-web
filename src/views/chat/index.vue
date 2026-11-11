@@ -783,11 +783,12 @@ onMounted(async () => {
 :deep(.citation-collapse .arco-collapse-item-header) {
   background: transparent;
   border: 0;
-  padding: 6px 12px;
+  padding: 6px 12px 6px 34px;
 }
 
 :deep(.citation-collapse .arco-collapse-item-content) {
   background: transparent;
+  padding: 0;
 }
 
 :deep(.citation-collapse .arco-collapse-item-content-box) {
