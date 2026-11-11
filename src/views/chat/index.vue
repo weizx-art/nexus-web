@@ -107,6 +107,11 @@ const strategyLabel = (strategy: 'semantic' | 'full_text' | 'hybrid') => {
   return '相似性检索'
 }
 
+const scorePercent = (score: number) => {
+  const value = Number(score) || 0
+  return Math.max(4, Math.min(100, Math.round(value * 100)))
+}
+
 const nowTimeStr = () => {
   const d = new Date()
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
@@ -682,28 +687,39 @@ onMounted(async () => {
                   <a-collapse class="citation-collapse" :default-active-key="[]" :bordered="false">
                     <a-collapse-item key="ref" :show-expand-icon="true">
                       <template #header>
-                        <span class="text-xs text-gray-400 flex items-center gap-1">
-                          <icon-book :size="12" />
-                          引用了 {{ msg.context!.length }} 条知识库内容
-                          <span v-if="msg.retrieval_strategy" class="text-gray-400">
-                            · {{ strategyLabel(msg.retrieval_strategy) }}
-                            <template v-if="msg.retrieval_k != null">
-                              （k={{ msg.retrieval_k }}，阈值 {{ msg.retrieval_score ?? 0 }}）
-                            </template>
+                        <div class="flex w-full items-center justify-between gap-3">
+                          <span class="flex items-center gap-1.5 text-xs text-gray-500">
+                            <icon-book :size="12" class="text-gray-400" />
+                            <span class="font-medium text-gray-600">引用来源</span>
+                            <span class="text-[11px] text-slate-400">{{ msg.context!.length }} 条</span>
                           </span>
-                        </span>
+                          <span v-if="msg.retrieval_strategy" class="truncate text-[11px] text-gray-400">
+                            {{ strategyLabel(msg.retrieval_strategy) }}<template v-if="msg.retrieval_k != null"> · k={{ msg.retrieval_k }} · 阈值 {{ msg.retrieval_score ?? 0 }}</template>
+                          </span>
+                        </div>
                       </template>
-                      <div class="space-y-2">
+                      <div class="divide-y divide-slate-200/70">
                         <div
                           v-for="(ctx, ci) in msg.context"
                           :key="ci"
-                          class="text-xs bg-gray-50 rounded-lg p-2.5 border border-gray-100"
+                          class="flex items-start gap-2.5 py-2.5 first:pt-1 last:pb-1"
                         >
-                          <div class="flex items-center justify-between mb-1">
-                            <span class="text-gray-500 font-medium">{{ ctx.source }}</span>
-                            <a-tag size="small" color="green">相关度 {{ ctx.score }}</a-tag>
+                          <span class="pt-0.5 text-[10px] font-semibold tabular-nums text-slate-400">
+                            {{ String(ci + 1).padStart(2, '0') }}
+                          </span>
+                          <div class="min-w-0 flex-1">
+                            <div class="flex items-baseline justify-between gap-3">
+                              <span class="truncate text-xs font-medium text-gray-700">{{ ctx.source }}</span>
+                              <span class="flex-shrink-0 text-[11px] font-medium tabular-nums text-blue-600/80">{{ scorePercent(ctx.score) }}%</span>
+                            </div>
+                            <div class="mt-1.5 h-[3px] w-full overflow-hidden rounded-full bg-slate-200/70">
+                              <div
+                                class="h-full rounded-full bg-gradient-to-r from-sky-400 to-blue-500 transition-all"
+                                :style="{ width: scorePercent(ctx.score) + '%' }"
+                              />
+                            </div>
+                            <p class="mt-1.5 line-clamp-3 text-[11px] leading-relaxed text-gray-500">{{ ctx.content }}</p>
                           </div>
-                          <p class="text-gray-600 line-clamp-3">{{ ctx.content }}</p>
                         </div>
                       </div>
                     </a-collapse-item>
@@ -774,16 +790,31 @@ onMounted(async () => {
 
 <style scoped>
 :deep(.citation-collapse .arco-collapse-item) {
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  background: #f9fafb;
-  border: 1px solid #f3f4f6;
+  background: #f7f9fc;
+  border: 1px solid #e3e8ef;
 }
 
 :deep(.citation-collapse .arco-collapse-item-header) {
   background: transparent;
   border: 0;
-  padding: 6px 12px 6px 34px;
+  padding: 7px 12px 7px 34px;
+  transition: background 0.15s ease;
+}
+
+:deep(.citation-collapse .arco-collapse-item-header-title) {
+  flex: 1;
+  min-width: 0;
+}
+
+
+:deep(.citation-collapse .arco-collapse-item-header:hover) {
+  background: #f1f4f8;
+}
+
+:deep(.citation-collapse .arco-collapse-item-active > .arco-collapse-item-header) {
+  border-bottom: 1px solid #eef1f5;
 }
 
 :deep(.citation-collapse .arco-collapse-item-content) {
@@ -792,6 +823,6 @@ onMounted(async () => {
 }
 
 :deep(.citation-collapse .arco-collapse-item-content-box) {
-  padding: 0 8px 8px;
+  padding: 2px 12px 6px;
 }
 </style>
