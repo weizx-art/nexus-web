@@ -120,8 +120,8 @@ const nowTimeStr = () => {
 const loadConversations = async () => {
   conversationsLoading.value = true
   try {
-    const resp = await getConversations(1, 50)
-    conversations.splice(0, conversations.length, ...resp.data.items)
+    const resp = await getConversations()
+    conversations.splice(0, conversations.length, ...resp.data)
     if (conversations.length === 0) {
       // 列表为空，清除可能存在的陈旧 ID 和知识库选择
       if (activeConversationId.value) {
@@ -210,8 +210,14 @@ const handleDeleteConversation = (convId: string) => {
     onOk: async () => {
       try {
         await deleteConversation(convId)
-        if (activeConversationId.value === convId) startNewChat()
-        await loadConversations()
+        const index = conversations.findIndex((c) => c.id === convId)
+        if (index > -1) conversations.splice(index, 1)
+        if (conversations.length === 0) {
+          startNewChat()
+        } else if (activeConversationId.value === convId) {
+          startNewChat()
+          await selectConversation(conversations[0].id)
+        }
         Message.success('删除成功')
       } catch {
         Message.error('删除失败')

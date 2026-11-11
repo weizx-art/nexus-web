@@ -8,8 +8,8 @@ import type {
 } from '@/models/chat'
 import type { BaseResponse } from '@/models/base'
 
-export const getConversations = (current_page = 1, page_size = 20) => {
-  return get<ConversationListResponse>(`/chat/conversations`, { current_page, page_size })
+export const getConversations = () => {
+  return get<ConversationListResponse>(`/chat/conversations`)
 }
 
 export const getConversationMessages = (conversation_id: string) => {

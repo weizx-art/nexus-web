@@ -32,15 +32,7 @@ export type Conversation = {
   updated_at: string | null
 }
 
-export type ConversationListResponse = BaseResponse<{
-  items: Conversation[]
-  paginator: {
-    current_page: number
-    page_size: number
-    total: number
-    total_pages: number
-  }
-}>
+export type ConversationListResponse = BaseResponse<Conversation[]>
 
 export type ChatMessage = {
   id: string
