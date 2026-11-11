@@ -1,9 +1,14 @@
 import { type BaseResponse } from '@/models/base'
 
+export type RetrievalStrategy = 'semantic' | 'full_text' | 'hybrid'
+
 export type ChatRequest = {
   message: string
   conversation_id?: string | null
   dataset_ids?: string[] | null
+  retrieval_strategy?: RetrievalStrategy
+  retrieval_k?: number
+  retrieval_score?: number
 }
 
 export type ChatResponse = BaseResponse<{

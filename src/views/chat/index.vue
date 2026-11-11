@@ -11,7 +11,7 @@ import {
   chatStream,
 } from '@/services/chat'
 import { getDatasetsWithPage } from '@/services/dataset'
-import type { Conversation } from '@/models/chat'
+import type { Conversation, RetrievalStrategy } from '@/models/chat'
 
 interface DisplayMessage {
   id: string
@@ -53,6 +53,27 @@ const selectedDatasetIds = computed({
 const showDatasetPicker = ref(false)
 const datasetsLoading = ref(false)
 const datasetSearch = ref('')
+
+const retrievalStrategy = computed({
+  get: () => chatStore.retrievalStrategy,
+  set: (val: RetrievalStrategy) => chatStore.setRetrievalStrategy(val),
+})
+
+const retrievalK = computed({
+  get: () => chatStore.retrievalK,
+  set: (val: number | null) => chatStore.setRetrievalK(Number(val ?? 1)),
+})
+
+const retrievalScore = computed({
+  get: () => chatStore.retrievalScore,
+  set: (val: number | null) => chatStore.setRetrievalScore(Number(val ?? 0)),
+})
+
+const strategyOptions = [
+  { label: '相似性检索', value: 'semantic' },
+  { label: '全文检索', value: 'full_text' },
+  { label: '混合策略', value: 'hybrid' },
+]
 
 const filteredDatasets = computed(() => {
   const kw = datasetSearch.value.trim().toLowerCase()
@@ -98,8 +119,9 @@ const loadConversations = async () => {
       return
     }
     // 如果当前选中的会话在列表中，加载其消息；否则加载第一个
-    const isValid = activeConversationId.value && conversations.some((c) => c.id === activeConversationId.value)
-    const targetId = isValid ? activeConversationId.value : conversations[0].id
+    const activeId = activeConversationId.value
+    const targetId =
+      activeId && conversations.some((c) => c.id === activeId) ? activeId : conversations[0].id
     await selectConversation(targetId)
   } catch {
     Message.error('加载对话列表失败')
@@ -248,6 +270,9 @@ const handleSend = async () => {
         message: text,
         conversation_id: activeConversationId.value,
         dataset_ids: selectedDatasetIds.value.length > 0 ? selectedDatasetIds.value : null,
+        retrieval_strategy: retrievalStrategy.value,
+        retrieval_k: retrievalK.value,
+        retrieval_score: retrievalScore.value,
       },
       abortController.value.signal,
     )
@@ -410,17 +435,79 @@ onMounted(async () => {
             </h1>
             <p class="text-xs text-gray-400 mt-0.5">基于知识库的智能问答，支持多轮对话与流式输出</p>
           </div>
-          <a-popover
-            trigger="click"
-            position="br"
-            :popup-visible="showDatasetPicker"
-            @popup-visible-change="
-              (v: boolean) => {
-                showDatasetPicker = v
-                if (!v) datasetSearch = ''
-              }
-            "
-          >
+          <div class="flex items-center gap-2">
+            <a-select
+              v-model="retrievalStrategy"
+              :options="strategyOptions"
+              size="small"
+              :style="{ width: '128px' }"
+              :disabled="selectedDatasetIds.length === 0"
+              :title="
+                selectedDatasetIds.length === 0 ? '选择知识库后可设置检索方式' : '知识库检索方式'
+              "
+            />
+            <a-popover trigger="click" position="br" :disabled="selectedDatasetIds.length === 0">
+              <a-button
+                type="text"
+                size="small"
+                :disabled="selectedDatasetIds.length === 0"
+                title="检索设置"
+              >
+                <template #icon><icon-settings :size="15" /></template>
+              </a-button>
+              <template #content>
+                <div class="w-72">
+                  <div class="text-sm font-medium text-gray-700 mb-3">检索设置</div>
+                  <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                    <span>最大召回数量</span>
+                    <span class="text-gray-400">1 - 10</span>
+                  </div>
+                  <div class="flex items-center gap-3 mb-4">
+                    <a-slider v-model:model-value="retrievalK" :step="1" :min="1" :max="10" />
+                    <a-input-number
+                      v-model:model-value="retrievalK"
+                      class="w-[72px]"
+                      :min="1"
+                      :max="10"
+                    />
+                  </div>
+                  <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
+                    <span>最小匹配度</span>
+                    <span class="text-gray-400">0 - 0.99</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <a-slider
+                      v-model:model-value="retrievalScore"
+                      :step="0.01"
+                      :min="0"
+                      :max="0.99"
+                    />
+                    <a-input-number
+                      v-model:model-value="retrievalScore"
+                      class="w-[72px]"
+                      :min="0"
+                      :max="0.99"
+                      :step="0.01"
+                      :precision="2"
+                    />
+                  </div>
+                  <div class="text-xs text-gray-400 mt-3 leading-relaxed">
+                    召回数量越大，上下文越全；匹配度越高越精准，设得过高可能检索不到内容。
+                  </div>
+                </div>
+              </template>
+            </a-popover>
+            <a-popover
+              trigger="click"
+              position="br"
+              :popup-visible="showDatasetPicker"
+              @popup-visible-change="
+                (v: boolean) => {
+                  showDatasetPicker = v
+                  if (!v) datasetSearch = ''
+                }
+              "
+            >
             <a-button type="outline" size="small" class="!rounded-lg">
               <template #icon><icon-book :size="14" /></template>
               知识库
@@ -482,7 +569,8 @@ onMounted(async () => {
                 </div>
               </div>
             </template>
-          </a-popover>
+            </a-popover>
+          </div>
         </div>
       </div>
 
