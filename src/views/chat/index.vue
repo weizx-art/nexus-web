@@ -679,7 +679,7 @@ onMounted(async () => {
                   v-if="msg.context && msg.context.length > 0 && !msg.streaming"
                   class="mt-1.5 w-full"
                 >
-                  <a-collapse :default-active-key="[]" :bordered="false">
+                  <a-collapse class="citation-collapse" :default-active-key="[]" :bordered="false">
                     <a-collapse-item key="ref" :show-expand-icon="true">
                       <template #header>
                         <span class="text-xs text-gray-400 flex items-center gap-1">
@@ -771,3 +771,26 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+:deep(.citation-collapse .arco-collapse-item) {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+}
+
+:deep(.citation-collapse .arco-collapse-item-header) {
+  background: transparent;
+  border: 0;
+  padding: 6px 12px;
+}
+
+:deep(.citation-collapse .arco-collapse-item-content) {
+  background: transparent;
+}
+
+:deep(.citation-collapse .arco-collapse-item-content-box) {
+  padding: 0 8px 8px;
+}
+</style>
