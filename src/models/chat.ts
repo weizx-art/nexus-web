@@ -53,6 +53,9 @@ export type ChatMessage = {
     score: number
   }> | null
   token_count: number
+  retrieval_strategy?: 'semantic' | 'full_text' | 'hybrid' | null
+  retrieval_k?: number | null
+  retrieval_score?: number | null
   created_at: string
 }
 

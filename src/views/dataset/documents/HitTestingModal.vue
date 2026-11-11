@@ -3,7 +3,11 @@ import { reactive, ref, watch } from 'vue'
 import dayjs from 'dayjs'
 import { getDatasetQueries, retrieval } from '@/services/dataset'
 import { Message } from '@arco-design/web-vue'
-import type { RetrievalResponse, GetDatasetQueriesResponse } from '@/models/dataset'
+import type {
+  RetrievalRequest,
+  RetrievalResponse,
+  GetDatasetQueriesResponse,
+} from '@/models/dataset'
 import BaseModal from '@/components/BaseModal/BaseModal.vue'
 
 type QueryItem = GetDatasetQueriesResponse['data'][number]
@@ -29,9 +33,9 @@ const loadQueries = async () => {
 
 const retrievalSettingModalVisible = ref(false)
 const defaultRetrievalSetting = {
-  retrieval_strategy: 'semantic' as const,
-  k: 5,
-  score: 0.5,
+  retrieval_strategy: 'hybrid' as RetrievalRequest['retrieval_strategy'],
+  k: 4,
+  score: 0.0,
 }
 const retrievalSettingForm = reactive({ ...defaultRetrievalSetting })
 const hideRetrievalSettingModal = () => {
@@ -204,7 +208,7 @@ watch(
         <a-form-item field="retrieval_strategy" label="检索策略" label-align="left">
           <a-radio-group
             v-model:model-value="retrievalSettingForm.retrieval_strategy"
-            default-value="semantic"
+            default-value="hybrid"
             :options="[
               { label: '混合策略', value: 'hybrid' },
               { label: '全文检索', value: 'full_text' },
@@ -237,7 +241,7 @@ watch(
               :max="0.99"
               :step="0.01"
               :precision="2"
-              :default-value="0.5"
+              :default-value="0"
             />
           </div>
         </a-form-item>

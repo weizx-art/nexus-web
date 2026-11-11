@@ -19,6 +19,9 @@ interface DisplayMessage {
   content: string
   time: string
   context?: Array<{ content: string; source: string; score: number }> | null
+  retrieval_strategy?: 'semantic' | 'full_text' | 'hybrid' | null
+  retrieval_k?: number | null
+  retrieval_score?: number | null
   streaming?: boolean
 }
 
@@ -98,6 +101,12 @@ const formatTime = (dateStr?: string | null) => {
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
 }
 
+const strategyLabel = (strategy: 'semantic' | 'full_text' | 'hybrid') => {
+  if (strategy === 'full_text') return '全文检索'
+  if (strategy === 'hybrid') return '混合策略'
+  return '相似性检索'
+}
+
 const nowTimeStr = () => {
   const d = new Date()
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
@@ -168,6 +177,9 @@ const selectConversation = async (convId: string) => {
           content: msg.content,
           time: formatTime(msg.created_at),
           context: msg.context,
+          retrieval_strategy: msg.retrieval_strategy ?? null,
+          retrieval_k: msg.retrieval_k ?? null,
+          retrieval_score: msg.retrieval_score ?? null,
         })
       }
     }
@@ -673,6 +685,12 @@ onMounted(async () => {
                         <span class="text-xs text-gray-400 flex items-center gap-1">
                           <icon-book :size="12" />
                           引用了 {{ msg.context!.length }} 条知识库内容
+                          <span v-if="msg.retrieval_strategy" class="text-gray-400">
+                            · {{ strategyLabel(msg.retrieval_strategy) }}
+                            <template v-if="msg.retrieval_k != null">
+                              （k={{ msg.retrieval_k }}，阈值 {{ msg.retrieval_score ?? 0 }}）
+                            </template>
+                          </span>
                         </span>
                       </template>
                       <div class="space-y-2">
